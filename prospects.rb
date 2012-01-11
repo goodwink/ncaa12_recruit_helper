@@ -1,7 +1,9 @@
 require 'csv'
 
 $my_school = "Palm Beach"
-$interest_maximum = nil
+
+puts "Interest maximum?"
+$interest_maximum = gets.strip.to_i
 
 puts "Position?"
 $position = gets.strip
@@ -197,7 +199,10 @@ $requirements['MLB'] = {
   "Hit Power" => 100
 }
 
-$prospects = CSV.read("prospects.csv", col_sep: ',', quote_char: '"', headers: true)
+data = File.open("prospects.csv", "rb").read
+data.gsub!(/([0-9]+)'([0-9]+)"/, '\1!\2')
+
+$prospects = CSV.parse(data, col_sep: ',', quote_char: '"', headers: true)
 
 $prospects = $prospects.each do |row|
   row['Weight'] = row['Weight'][/([0-9]+) lbs/, 1].to_i
@@ -300,7 +305,7 @@ end
 results = {}
 
 $prospects.each do |p|
-  if score(p) >= filter_minimum() && (!$interest_maximum || interest(p) < $interest_maximum)
+  if score(p) >= filter_minimum() && (!$interest_maximum || interest(p) <= $interest_maximum)
      results["#{p['Name']} (#{p['Caliber']}* #{p['Position']}, #{p['State']}, #{interest(p)} interest): #{"%d" % scale(score(p))}"] = score(p)
   end
 end
