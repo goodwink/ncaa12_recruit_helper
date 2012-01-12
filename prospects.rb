@@ -280,6 +280,8 @@ def hidden_attribute_value(p, name)
         p['Tackle']
       when "Play Recognition"
         p['Awareness']
+      when "Acceleration"
+        (p['Agility'] + p['Speed'] - 20) / 2
       else
         0
       end
